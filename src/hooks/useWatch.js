@@ -1,11 +1,10 @@
-//* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import getAnimeInfo from "@/src/utils/getAnimeInfo.utils";
 import getEpisodes from "@/src/utils/getEpisodes.utils";
 import getNextEpisodeSchedule from "../utils/getNextEpisodeSchedule.utils";
 import getServers from "../utils/getServers.utils";
 import getStreamInfo from "../utils/getStreamInfo.utils";
-import { getAllShizuruStreams } from "@/src/utils/getShizuruStreams.utils";
 
 export const useWatch = (animeId, initialEpisodeId) => {
   const [error, setError] = useState(null);
@@ -171,58 +170,21 @@ export const useWatch = (animeId, initialEpisodeId) => {
             server_id: `slay-${lang.param.toLowerCase()}`
           });
         });
-
-        // Add Shizuru API servers (Zuko, Suki, Holyshit)
-        try {
-          const episodeNum = activeEpisodeNum;
-          
-          if (animeInfo && episodeNum) {
-            console.log("Fetching Shizuru servers from anime info...");
-            
-            // Extract MAL ID and AniList ID from the existing anime info
-            let malId = null;
-            let anilistId = null;
-            
-            // Check multiple possible locations in the anime data
-            if (animeInfo.malId) malId = animeInfo.malId;
-            if (animeInfo.anilistId) anilistId = animeInfo.anilistId;
-            if (animeInfo.data?.malId) malId = animeInfo.data.malId;
-            if (animeInfo.data?.anilistId) anilistId = animeInfo.data.anilistId;
-            
-            // Check in metadata or other nested objects
-            if (animeInfo.metadata?.malId) malId = animeInfo.metadata.malId;
-            if (animeInfo.metadata?.anilistId) anilistId = animeInfo.metadata.anilistId;
-            
-            // Check if the anime has external links/IDs 
-            if (animeInfo.mappings) {
-              const malMapping = animeInfo.mappings.find(m => m.providerId === 'myanimelist');
-              const anilistMapping = animeInfo.mappings.find(m => m.providerId === 'anilist');
-              if (malMapping) malId = malMapping.id;
-              if (anilistMapping) anilistId = anilistMapping.id;
-            }
-            
-            // Use anime URL ID as fallback for AniList
-            if (!anilistId) anilistId = animeId;
-            
-            console.log("Extracted IDs from anime info:", { malId, anilistId, episodeNum });
-            
-            if ((malId || anilistId)) {
-              const shizuruServers = await getAllShizuruStreams(malId, anilistId, episodeNum);
-              
-              if (shizuruServers && shizuruServers.length > 0) {
-                console.log("Adding Shizuru servers:", shizuruServers);
-                filteredServers.push(...shizuruServers);
-              } else {
-                console.log("No Shizuru servers available for this anime/episode");
-              }
-            } else {
-              console.log("No MAL or AniList ID found for Shizuru servers");
-            }
-          }
-        } catch (shizuruError) {
-          console.warn("Failed to fetch Shizuru servers:", shizuruError);
-          // Continue without Shizuru servers if they fail
-        }
+        
+        // Add VIDAPI servers
+        const vidapiServers = [
+          { name: "VidAPI-1", id: "vidapi-1" },
+          { name: "VidAPI-2", id: "vidapi-2" }
+        ];
+        
+        vidapiServers.forEach(server => {
+          filteredServers.push({ 
+            type: "vidapi", 
+            serverName: server.name, 
+            data_id: server.id,
+            server_id: server.id
+          });
+        });
         
         console.log("Final filteredServers:", filteredServers);
         
@@ -232,7 +194,6 @@ export const useWatch = (animeId, initialEpisodeId) => {
           filteredServers.find(s => s.serverName === savedServerName && s.type === savedServerType) ||
           filteredServers.find(s => s.serverName === savedServerName) ||
           filteredServers.find(s => s.type === savedServerType && ["HD-1", "HD-2", "HD-3", "HD-4", "Nest"].includes(s.serverName)) ||
-          filteredServers.find(s => s.type === "dub" && !s.provider) ||
           filteredServers.find(s => s.type === "dub") ||
           filteredServers[0];
 
@@ -260,24 +221,11 @@ export const useWatch = (animeId, initialEpisodeId) => {
       isStreamFetchInProgress.current
     )
       return;
-    // Check if this is a server type that doesn't need stream info fetching
-    const currentServer = servers.find(srv => srv.data_id === activeServerId);
-    const isIframeServer = activeServerName?.toLowerCase() === "hd-1" || 
-                          activeServerName?.toLowerCase() === "hd-4" || 
-                          activeServerName?.toLowerCase() === "nest" || 
-                          activeServerName?.toLowerCase() === "slay";
-    const isShizuruServer = currentServer?.provider && 
-                           ['zuko', 'suki', 'holyshit'].includes(currentServer.provider);
-    
-    if ((isIframeServer || isShizuruServer) && !serverLoading) {
-      // For Shizuru servers, set the stream URL directly
-      if (isShizuruServer && currentServer?.streamUrl) {
-        setStreamUrl(currentServer.streamUrl);
-        setSubtitles([]);
-        setThumbnail(null);
-        setIntro(null);
-        setOutro(null);
-      }
+    if (
+      (activeServerName?.toLowerCase() === "hd-1" || activeServerName?.toLowerCase() === "hd-4" || activeServerName?.toLowerCase() === "nest" || activeServerType?.toLowerCase() === "slay" || activeServerType?.toLowerCase() === "vidapi") 
+      &&
+      !serverLoading
+    ) {
       setBuffering(false);
       return;
     }
