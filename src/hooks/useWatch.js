@@ -174,9 +174,18 @@ export const useWatch = (animeId, initialEpisodeId) => {
 
         // Add Shizuru API servers (Zuko, Suki, Holyshit)
         try {
-          const malId = animeInfo?.malId;
-          const anilistId = animeInfo?.anilistId;
+          // Check multiple possible locations for IDs
+          const malId = animeInfo?.malId || animeInfo?.data?.malId || animeInfo?.data?.metadata?.malId;
+          const anilistId = animeInfo?.anilistId || animeInfo?.data?.anilistId || animeInfo?.data?.metadata?.anilistId || animeId;
           const episodeNum = activeEpisodeNum;
+
+          console.log("Debug anime info structure:", {
+            animeInfo,
+            malId,
+            anilistId,
+            episodeNum,
+            animeId
+          });
 
           if ((malId || anilistId) && episodeNum) {
             console.log("Fetching Shizuru servers for:", { malId, anilistId, episodeNum });
@@ -185,7 +194,11 @@ export const useWatch = (animeId, initialEpisodeId) => {
             if (shizuruServers && shizuruServers.length > 0) {
               console.log("Adding Shizuru servers:", shizuruServers);
               filteredServers.push(...shizuruServers);
+            } else {
+              console.log("No Shizuru servers returned");
             }
+          } else {
+            console.log("Missing required data for Shizuru servers:", { malId, anilistId, episodeNum });
           }
         } catch (shizuruError) {
           console.warn("Failed to fetch Shizuru servers:", shizuruError);
@@ -330,4 +343,5 @@ export const useWatch = (animeId, initialEpisodeId) => {
     activeServer,
   };
 };
+
 
