@@ -1,4 +1,21 @@
-rc/components/ui/Skeleton/Skeleton";
+//* eslint-disable react/prop-types */
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
+import { useLanguage } from "@/src/context/LanguageContext";
+import { useHomeInfo } from "@/src/context/HomeInfoContext";
+import { useWatch } from "@/src/hooks/useWatch";
+import BouncingLoader from "@/src/components/ui/bouncingloader/Bouncingloader";
+import IframePlayer from "@/src/components/player/IframePlayer";
+import Episodelist from "@/src/components/episodelist/Episodelist";
+import website_name from "@/src/config/website";
+import Sidecard from "@/src/components/sidecard/Sidecard";
+import {
+  faClosedCaptioning,
+  faMicrophone,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Servers from "@/src/components/servers/Servers";
+import { Skeleton } from "@/src/components/ui/Skeleton/Skeleton";
 import SidecardLoader from "@/src/components/Loader/Sidecard.loader";
 import Watchcontrols from "@/src/components/watchcontrols/Watchcontrols";
 import useWatchControl from "@/src/hooks/useWatchControl";
