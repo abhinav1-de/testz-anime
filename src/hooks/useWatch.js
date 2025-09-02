@@ -1,11 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/*/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import getAnimeInfo from "@/src/utils/getAnimeInfo.utils";
 import getEpisodes from "@/src/utils/getEpisodes.utils";
 import getNextEpisodeSchedule from "../utils/getNextEpisodeSchedule.utils";
 import getServers from "../utils/getServers.utils";
 import getStreamInfo from "../utils/getStreamInfo.utils";
-import { getAllShizuruStreams } from "../utils/getShizuruStreams.utils";
+import { getAllShizuruStreams } from "@/src/utils/getShizuruStreams.utils";
 
 export const useWatch = (animeId, initialEpisodeId) => {
   const [error, setError] = useState(null);
