@@ -125,21 +125,21 @@ export const useWatch = (animeId, initialEpisodeId) => {
             server.serverName === "HD-1" ||
             server.serverName === "HD-3"
         );
-        // Add VidAPI-1 servers
+        // Add VidAPI-1 and VidAPI-2 servers to SUB category only
         if (filteredServers.some((s) => s.type === "sub")) {
           filteredServers.push({
-            type: "vidapi",
+            type: "sub",
             data_id: "vidapi1-sub",
             server_id: "vidapi1-sub",
             serverName: "VidAPI-1",
+            isVidapi: true,
           });
-        }
-        if (filteredServers.some((s) => s.type === "dub")) {
           filteredServers.push({
-            type: "vidapi",
-            data_id: "vidapi1-dub",
-            server_id: "vidapi1-dub", 
-            serverName: "VidAPI-1",
+            type: "sub",
+            data_id: "vidapi2-sub",
+            server_id: "vidapi2-sub",
+            serverName: "VidAPI-2",
+            isVidapi: true,
           });
         }
         
@@ -158,24 +158,6 @@ export const useWatch = (animeId, initialEpisodeId) => {
             data_id: "96969696",
             server_id: "42",
             serverName: "HD-4",
-          });
-        }
-        
-        // Add VidAPI-2 servers
-        if (filteredServers.some((s) => s.type === "sub")) {
-          filteredServers.push({
-            type: "vidapi",
-            data_id: "vidapi2-sub",
-            server_id: "vidapi2-sub",
-            serverName: "VidAPI-2",
-          });
-        }
-        if (filteredServers.some((s) => s.type === "dub")) {
-          filteredServers.push({
-            type: "vidapi",
-            data_id: "vidapi2-dub",
-            server_id: "vidapi2-dub",
-            serverName: "VidAPI-2",
           });
         }
         
@@ -244,7 +226,7 @@ export const useWatch = (animeId, initialEpisodeId) => {
     )
       return;
     if (
-      (activeServerName?.toLowerCase() === "hd-1" || activeServerName?.toLowerCase() === "hd-4" || activeServerName?.toLowerCase() === "nest" || activeServerType?.toLowerCase() === "slay" || activeServerType?.toLowerCase() === "vidapi") 
+      (activeServerName?.toLowerCase() === "hd-1" || activeServerName?.toLowerCase() === "hd-4" || activeServerName?.toLowerCase() === "nest" || activeServerType?.toLowerCase() === "slay" || activeServerName?.includes("VidAPI")) 
       &&
       !serverLoading
     ) {
@@ -332,5 +314,4 @@ export const useWatch = (animeId, initialEpisodeId) => {
     activeServer,
   };
 };
-
 
