@@ -126,17 +126,21 @@ export const useWatch = (animeId, initialEpisodeId) => {
             server.serverName === "HD-3"
         );
         
-        // Filter servers: HD-3 only for SUB, HD-1 for both SUB and DUB
-        const filteredServers = originalServers?.filter(server => {
+        // Create properly filtered servers with unique IDs to prevent conflicts
+        const filteredServers = [];
+        
+        originalServers?.forEach(server => {
           if (server.serverName === "HD-3" && server.type === "dub") {
-            return false; // Remove HD-3 from DUB section
+            return; // Skip HD-3 for DUB section
           }
-          return true;
-        }).map(server => ({
-          ...server,
-          data_id: `${server.data_id}-${server.type}`,
-          server_id: `${server.server_id}-${server.type}`
-        })) || [];
+          
+          // Create completely unique data_ids for each server type combination
+          filteredServers.push({
+            ...server,
+            data_id: `${server.serverName.toLowerCase().replace('-', '')}_${server.type}_${server.data_id || Math.random().toString(36).substr(2, 9)}`,
+            server_id: `${server.serverName.toLowerCase().replace('-', '')}_${server.type}_${server.server_id || Math.random().toString(36).substr(2, 9)}`
+          });
+        });
         
         // Add VidAPI-1 and VidAPI-2 servers to SUB category only
         if (filteredServers.some((s) => s.type === "sub")) {
