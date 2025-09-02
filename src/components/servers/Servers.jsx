@@ -34,7 +34,7 @@ function Servers({
   // Filter servers based on multiplayer compatibility
   const isIframeCompatible = (server) => {
     // Multiplayer compatible servers: SLAY and VIDAPI servers
-    return server.type === "slay" || server.type === "vidapi";
+    return server.type === "slay" || server.isVidapi;
   };
 
   // When in multiplayer room, only show iframe-compatible servers
@@ -47,7 +47,6 @@ function Servers({
   const rawServers = filteredServers.filter((server) => server.type === "raw") || [];
   const multiServers = filteredServers.filter((server) => server.type === "multi") || [];
   const slayServers = filteredServers.filter((server) => server.type === "slay") || [];
-  const vidapiServers = filteredServers.filter((server) => server.type === "vidapi") || [];
 
   useEffect(() => {
     const savedServerName = localStorage.getItem("server_name");
@@ -247,35 +246,6 @@ function Servers({
                 </div>
                 <div className="flex gap-1.5 ml-2 flex-wrap max-[600px]:ml-0">
                   {slayServers.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`px-6 py-[5px] rounded-lg cursor-pointer ${
-                        activeServerId === item?.data_id
-                          ? "bg-[#e0e0e0] text-black"
-                          : "bg-[#373737] text-white"
-                      } max-[700px]:px-3 max-[600px]:px-2 max-[600px]:py-1`}
-                      onClick={() => handleServerSelect(item)}
-                    >
-                      <p className="text-[13px] font-semibold max-[600px]:text-[12px]">
-                        {item.serverName}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {vidapiServers.length > 0 && (
-              <div className="servers px-2 flex items-center flex-wrap gap-y-1 ml-2 max-[600px]:py-1.5 max-[600px]:px-1 max-[600px]:ml-0 h-full">
-                <div className="flex items-center gap-x-2 min-w-[65px]">
-                  <FontAwesomeIcon
-                    icon={faLanguage}
-                    className="text-[#e0e0e0] text-[13px]"
-                  />
-                  <p className="font-bold text-[14px] max-[600px]:text-[12px]">VID:</p>
-                </div>
-                <div className="flex gap-1.5 ml-2 flex-wrap max-[600px]:ml-0">
-                  {vidapiServers.map((item, index) => (
                     <div
                       key={index}
                       className={`px-6 py-[5px] rounded-lg cursor-pointer ${
