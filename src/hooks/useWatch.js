@@ -174,22 +174,30 @@ export const useWatch = (animeId, initialEpisodeId) => {
 
         // Add Shizuru API servers (Zuko, Suki, Holyshit)
         try {
-          // Check multiple possible locations for IDs
+          console.log("=== SHIZURU DEBUG START ===");
+          console.log("animeId from URL:", animeId);
+          console.log("activeEpisodeNum:", activeEpisodeNum);
+          console.log("animeInfo structure:", animeInfo);
+          
+          // Use the animeId from URL as fallback and try to extract MAL/AniList IDs
           const malId = animeInfo?.malId || animeInfo?.data?.malId || animeInfo?.data?.metadata?.malId;
           const anilistId = animeInfo?.anilistId || animeInfo?.data?.anilistId || animeInfo?.data?.metadata?.anilistId || animeId;
           const episodeNum = activeEpisodeNum;
 
-          console.log("Debug anime info structure:", {
-            animeInfo,
-            malId,
-            anilistId,
-            episodeNum,
-            animeId
-          });
+          console.log("Extracted IDs:", { malId, anilistId, episodeNum });
 
-          if ((malId || anilistId) && episodeNum) {
-            console.log("Fetching Shizuru servers for:", { malId, anilistId, episodeNum });
-            const shizuruServers = await getAllShizuruStreams(malId, anilistId, episodeNum);
+          // Test with hardcoded values for debugging
+          const testMalId = "16498"; // Attack on Titan
+          const testAnilistId = "159039"; // Test anime
+          const testEpisode = episodeNum || "1";
+          
+          console.log("Testing with hardcoded values:", { testMalId, testAnilistId, testEpisode });
+
+          if (episodeNum) {
+            console.log("Fetching Shizuru servers...");
+            const shizuruServers = await getAllShizuruStreams(testMalId, testAnilistId, testEpisode);
+            
+            console.log("Shizuru servers response:", shizuruServers);
             
             if (shizuruServers && shizuruServers.length > 0) {
               console.log("Adding Shizuru servers:", shizuruServers);
@@ -198,10 +206,11 @@ export const useWatch = (animeId, initialEpisodeId) => {
               console.log("No Shizuru servers returned");
             }
           } else {
-            console.log("Missing required data for Shizuru servers:", { malId, anilistId, episodeNum });
+            console.log("No episode number available");
           }
+          console.log("=== SHIZURU DEBUG END ===");
         } catch (shizuruError) {
-          console.warn("Failed to fetch Shizuru servers:", shizuruError);
+          console.error("Failed to fetch Shizuru servers:", shizuruError);
           // Continue without Shizuru servers if they fail
         }
         
@@ -343,5 +352,6 @@ export const useWatch = (animeId, initialEpisodeId) => {
     activeServer,
   };
 };
+
 
 
