@@ -5,6 +5,7 @@ import getEpisodes from "@/src/utils/getEpisodes.utils";
 import getNextEpisodeSchedule from "../utils/getNextEpisodeSchedule.utils";
 import getServers from "../utils/getServers.utils";
 import getStreamInfo from "../utils/getStreamInfo.utils";
+import { getAllShizuruStreams } from "../utils/getShizuruStreams.utils";
 
 export const useWatch = (animeId, initialEpisodeId) => {
   const [error, setError] = useState(null);
@@ -170,6 +171,26 @@ export const useWatch = (animeId, initialEpisodeId) => {
             server_id: `slay-${lang.param.toLowerCase()}`
           });
         });
+
+        // Add Shizuru API servers (Zuko, Suki, Holyshit)
+        try {
+          const malId = animeInfo?.malId;
+          const anilistId = animeInfo?.anilistId;
+          const episodeNum = activeEpisodeNum;
+
+          if ((malId || anilistId) && episodeNum) {
+            console.log("Fetching Shizuru servers for:", { malId, anilistId, episodeNum });
+            const shizuruServers = await getAllShizuruStreams(malId, anilistId, episodeNum);
+            
+            if (shizuruServers && shizuruServers.length > 0) {
+              console.log("Adding Shizuru servers:", shizuruServers);
+              filteredServers.push(...shizuruServers);
+            }
+          }
+        } catch (shizuruError) {
+          console.warn("Failed to fetch Shizuru servers:", shizuruError);
+          // Continue without Shizuru servers if they fail
+        }
         
         console.log("Final filteredServers:", filteredServers);
         
@@ -179,6 +200,7 @@ export const useWatch = (animeId, initialEpisodeId) => {
           filteredServers.find(s => s.serverName === savedServerName && s.type === savedServerType) ||
           filteredServers.find(s => s.serverName === savedServerName) ||
           filteredServers.find(s => s.type === savedServerType && ["HD-1", "HD-2", "HD-3", "HD-4", "Nest"].includes(s.serverName)) ||
+          filteredServers.find(s => s.type === "dub" && !s.provider) ||
           filteredServers.find(s => s.type === "dub") ||
           filteredServers[0];
 
@@ -206,11 +228,24 @@ export const useWatch = (animeId, initialEpisodeId) => {
       isStreamFetchInProgress.current
     )
       return;
-    if (
-      (activeServerName?.toLowerCase() === "hd-1" || activeServerName?.toLowerCase() === "hd-4" || activeServerName?.toLowerCase() === "nest" || activeServerName?.toLowerCase() === "slay") 
-      &&
-      !serverLoading
-    ) {
+    // Check if this is a server type that doesn't need stream info fetching
+    const currentServer = servers.find(srv => srv.data_id === activeServerId);
+    const isIframeServer = activeServerName?.toLowerCase() === "hd-1" || 
+                          activeServerName?.toLowerCase() === "hd-4" || 
+                          activeServerName?.toLowerCase() === "nest" || 
+                          activeServerName?.toLowerCase() === "slay";
+    const isShizuruServer = currentServer?.provider && 
+                           ['zuko', 'suki', 'holyshit'].includes(currentServer.provider);
+    
+    if ((isIframeServer || isShizuruServer) && !serverLoading) {
+      // For Shizuru servers, set the stream URL directly
+      if (isShizuruServer && currentServer?.streamUrl) {
+        setStreamUrl(currentServer.streamUrl);
+        setSubtitles([]);
+        setThumbnail(null);
+        setIntro(null);
+        setOutro(null);
+      }
       setBuffering(false);
       return;
     }
