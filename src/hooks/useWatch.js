@@ -123,9 +123,27 @@ export const useWatch = (animeId, initialEpisodeId) => {
         const filteredServers = data?.filter(
           (server) =>
             server.serverName === "HD-1" ||
-            server.serverName === "HD-2" ||
             server.serverName === "HD-3"
         );
+        // Add VidAPI-1 servers
+        if (filteredServers.some((s) => s.type === "sub")) {
+          filteredServers.push({
+            type: "vidapi",
+            data_id: "vidapi1-sub",
+            server_id: "vidapi1-sub",
+            serverName: "VidAPI-1",
+          });
+        }
+        if (filteredServers.some((s) => s.type === "dub")) {
+          filteredServers.push({
+            type: "vidapi",
+            data_id: "vidapi1-dub",
+            server_id: "vidapi1-dub", 
+            serverName: "VidAPI-1",
+          });
+        }
+        
+        // Add HD-4 servers
         if (filteredServers.some((s) => s.type === "sub")) {
           filteredServers.push({
             type: "sub",
@@ -140,6 +158,24 @@ export const useWatch = (animeId, initialEpisodeId) => {
             data_id: "96969696",
             server_id: "42",
             serverName: "HD-4",
+          });
+        }
+        
+        // Add VidAPI-2 servers
+        if (filteredServers.some((s) => s.type === "sub")) {
+          filteredServers.push({
+            type: "vidapi",
+            data_id: "vidapi2-sub",
+            server_id: "vidapi2-sub",
+            serverName: "VidAPI-2",
+          });
+        }
+        if (filteredServers.some((s) => s.type === "dub")) {
+          filteredServers.push({
+            type: "vidapi",
+            data_id: "vidapi2-dub",
+            server_id: "vidapi2-dub",
+            serverName: "VidAPI-2",
           });
         }
         
@@ -171,20 +207,6 @@ export const useWatch = (animeId, initialEpisodeId) => {
           });
         });
         
-        // Add VIDAPI servers
-        const vidapiServers = [
-          { name: "VidAPI-1", id: "vidapi-1" },
-          { name: "VidAPI-2", id: "vidapi-2" }
-        ];
-        
-        vidapiServers.forEach(server => {
-          filteredServers.push({ 
-            type: "vidapi", 
-            serverName: server.name, 
-            data_id: server.id,
-            server_id: server.id
-          });
-        });
         
         console.log("Final filteredServers:", filteredServers);
         
@@ -310,4 +332,5 @@ export const useWatch = (animeId, initialEpisodeId) => {
     activeServer,
   };
 };
+
 
