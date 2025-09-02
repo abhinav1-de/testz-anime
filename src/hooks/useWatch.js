@@ -120,11 +120,19 @@ export const useWatch = (animeId, initialEpisodeId) => {
         const data = await getServers(animeId, episodeId);
         console.log(data);
         
-        const filteredServers = data?.filter(
+        const originalServers = data?.filter(
           (server) =>
             server.serverName === "HD-1" ||
             server.serverName === "HD-3"
         );
+        
+        // Ensure unique data_ids by adding type suffix
+        const filteredServers = originalServers?.map(server => ({
+          ...server,
+          data_id: `${server.data_id}-${server.type}`,
+          server_id: `${server.server_id}-${server.type}`
+        })) || [];
+        
         // Add VidAPI-1 and VidAPI-2 servers to SUB category only
         if (filteredServers.some((s) => s.type === "sub")) {
           filteredServers.push({
@@ -147,16 +155,16 @@ export const useWatch = (animeId, initialEpisodeId) => {
         if (filteredServers.some((s) => s.type === "sub")) {
           filteredServers.push({
             type: "sub",
-            data_id: "69696969",
-            server_id: "41",
+            data_id: "hd4-sub-custom",
+            server_id: "hd4-sub-41",
             serverName: "HD-4",
           });
         }
         if (filteredServers.some((s) => s.type === "dub")) {
           filteredServers.push({
             type: "dub",
-            data_id: "96969696",
-            server_id: "42",
+            data_id: "hd4-dub-custom",
+            server_id: "hd4-dub-42",
             serverName: "HD-4",
           });
         }
@@ -194,11 +202,13 @@ export const useWatch = (animeId, initialEpisodeId) => {
         
         const savedServerName = localStorage.getItem("server_name");
         const savedServerType = localStorage.getItem("server_type");
+        const savedDataId = localStorage.getItem("server_data_id");
+        
         const initialServer =
+          filteredServers.find(s => s.data_id === savedDataId) ||
           filteredServers.find(s => s.serverName === savedServerName && s.type === savedServerType) ||
-          filteredServers.find(s => s.serverName === savedServerName) ||
-          filteredServers.find(s => s.type === savedServerType && ["HD-1", "HD-2", "HD-3", "HD-4", "Nest"].includes(s.serverName)) ||
           filteredServers.find(s => s.type === "dub") ||
+          filteredServers.find(s => s.type === "sub") ||
           filteredServers[0];
 
         setServers(filteredServers);
