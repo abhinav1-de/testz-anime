@@ -36,6 +36,8 @@ export default function IframePlayer({
       ? import.meta.env.VITE_BASE_IFRAME_URL_3
       : activeServer?.type === "slay"
       ? "https://slay-knight.xyz"
+      : activeServer?.type === "vidapi"
+      ? "https://vidapi.xyz"
       : undefined; 
 
   const [loading, setLoading] = useState(true);
@@ -106,6 +108,25 @@ export default function IframePlayer({
         console.log("Fallback aniid:", aniid);
         console.log("========================");
         setIframeSrc(slayUrl);
+      } else if (activeServer?.type === "vidapi") {
+        // Handle vidapi server
+        // Convert anime title to URL-friendly format for vidapi
+        const animeTitle = animeInfo?.title || "";
+        const linkUrl = animeTitle
+          .toLowerCase()
+          .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .trim();
+        
+        const vidapiUrl = `${baseURL}/embed/anime/${linkUrl}-episode-${episodeNum}`;
+        console.log("=== VIDAPI SERVER DEBUG ===");
+        console.log("Vidapi URL:", vidapiUrl);
+        console.log("Anime Title:", animeTitle);
+        console.log("Link URL:", linkUrl);
+        console.log("Episode Num:", episodeNum);
+        console.log("BaseURL:", baseURL);
+        console.log("==========================");
+        setIframeSrc(vidapiUrl);
       } else if (activeServer?.type === "multi" || serverName.toLowerCase() === "multi") {
         // Handle multi server (old Nest functionality)
         const multiUrl = `${baseURL}/${aniid}/${episodeNum}/hindi`;
