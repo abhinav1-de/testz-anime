@@ -36,7 +36,7 @@ export default function IframePlayer({
       ? import.meta.env.VITE_BASE_IFRAME_URL_3
       : activeServer?.type === "slay"
       ? "https://slay-knight.xyz"
-      : activeServer?.type === "vidapi"
+      : activeServer?.isVidapi
       ? "https://vidapi.xyz"
       : undefined; 
 
@@ -108,7 +108,7 @@ export default function IframePlayer({
         console.log("Fallback aniid:", aniid);
         console.log("========================");
         setIframeSrc(slayUrl);
-      } else if (activeServer?.type === "vidapi") {
+      } else if (activeServer?.isVidapi) {
         // Handle vidapi server
         // Convert anime title to URL-friendly format for vidapi
         const animeTitle = animeInfo?.title || "";
@@ -244,3 +244,4 @@ export default function IframePlayer({
     </div>
   );
 }
+
