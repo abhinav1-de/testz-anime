@@ -126,8 +126,13 @@ export const useWatch = (animeId, initialEpisodeId) => {
             server.serverName === "HD-3"
         );
         
-        // Ensure unique data_ids by adding type suffix
-        const filteredServers = originalServers?.map(server => ({
+        // Filter servers: HD-3 only for SUB, HD-1 for both SUB and DUB
+        const filteredServers = originalServers?.filter(server => {
+          if (server.serverName === "HD-3" && server.type === "dub") {
+            return false; // Remove HD-3 from DUB section
+          }
+          return true;
+        }).map(server => ({
           ...server,
           data_id: `${server.data_id}-${server.type}`,
           server_id: `${server.server_id}-${server.type}`
@@ -324,4 +329,3 @@ export const useWatch = (animeId, initialEpisodeId) => {
     activeServer,
   };
 };
-
