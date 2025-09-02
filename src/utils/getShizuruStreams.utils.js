@@ -24,6 +24,7 @@ export async function getShizuruStream(provider, idType, animeId, episodeNum) {
 
     const url = `${endpoint}/${idType}/${animeId}/${episodeNum}`;
     console.log(`Fetching from Shizuru ${provider}:`, url);
+    console.log('Request details:', { provider, idType, animeId, episodeNum });
     
     const response = await axios.get(url, {
       timeout: 10000, // 10 second timeout
