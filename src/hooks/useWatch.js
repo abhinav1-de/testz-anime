@@ -353,5 +353,3 @@ export const useWatch = (animeId, initialEpisodeId) => {
   };
 };
 
-
-
