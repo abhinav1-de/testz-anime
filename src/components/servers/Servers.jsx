@@ -24,11 +24,13 @@ function Servers({
   const { isInRoom } = useMultiplayer();
   
   const handleServerSelect = (server) => {
+    console.log("Selecting server:", server);
     setActiveServerId(server.data_id);
     setActiveServerType(server.type);
     setActiveServerName(server.serverName);
     localStorage.setItem("server_name", server.serverName);
     localStorage.setItem("server_type", server.type);
+    localStorage.setItem("server_data_id", server.data_id);
   };
 
   // Filter servers based on multiplayer compatibility
@@ -276,4 +278,3 @@ function Servers({
 }
 
 export default Servers;
-
