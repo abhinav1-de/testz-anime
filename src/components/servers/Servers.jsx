@@ -68,20 +68,41 @@ function Servers({
         }
       }
     } else if (savedServerName) {
-      const matchingServer = servers?.find(
-        (server) => server.serverName === savedServerName,
+      const savedServerType = localStorage.getItem("server_type");
+      const savedDataId = localStorage.getItem("server_data_id");
+      
+      // First try to match by exact data_id (most precise)
+      let matchingServer = servers?.find(
+        (server) => server.data_id === savedDataId
       );
+      
+      // If no exact data_id match, try to match by serverName AND type
+      if (!matchingServer && savedServerType) {
+        matchingServer = servers?.find(
+          (server) => server.serverName === savedServerName && server.type === savedServerType
+        );
+      }
+      
+      // If still no match, try just serverName (fallback)
+      if (!matchingServer) {
+        matchingServer = servers?.find(
+          (server) => server.serverName === savedServerName
+        );
+      }
 
       if (matchingServer) {
         setActiveServerId(matchingServer.data_id);
         setActiveServerType(matchingServer.type);
+        setActiveServerName(matchingServer.serverName);
       } else if (servers && servers.length > 0) {
         setActiveServerId(servers[0].data_id);
         setActiveServerType(servers[0].type);
+        setActiveServerName(servers[0].serverName);
       }
     } else if (servers && servers.length > 0) {
       setActiveServerId(servers[0].data_id);
       setActiveServerType(servers[0].type);
+      setActiveServerName(servers[0].serverName);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [servers, isInRoom, activeServerId]);
