@@ -272,7 +272,7 @@ export default function Watch() {
               {/* Video Container */}
               <div ref={videoContainerRef} className="w-full relative aspect-video bg-black">
                 {(() => {
-                  const shouldUseIframe = ["hd-1", "hd-4", "nest"].includes(activeServerName?.toLowerCase()) || activeServerType?.toLowerCase() === "slay" || activeServerName?.includes("VidAPI");
+                  const shouldUseIframe = ["hd-1", "hd-4", "nest"].includes(activeServerName?.toLowerCase()) || activeServerType?.toLowerCase() === "slay" || activeServerName?.includes("VidAPI") || activeServerName?.toLowerCase() === "pahe";
                   console.log("=== WATCH COMPONENT DEBUG ===");
                   console.log("Buffering:", buffering);
                   console.log("ActiveServerName:", activeServerName);
@@ -656,6 +656,8 @@ export default function Watch() {
     </div>
   );
 }
+
+
 
 
 
