@@ -134,8 +134,8 @@ export default function IframePlayer({
         // Get anilistId for the anime
         const anilistId = animeInfo?.anilistId || aniid;
         
-        // Construct URL following the pattern: https://vidnest.fun/?anilist_id=16498&episode=1&type=sub
-        const paheUrl = `${baseURL}/?anilist_id=${anilistId}&episode=${episodeNum}&type=${servertype}`;
+        // Construct URL following the pattern: https://vidnest.fun/animepahe/16498/1/sub or https://vidnest.fun/animepahe/16498/1/dub
+        const paheUrl = `${baseURL}/animepahe/${anilistId}/${episodeNum}/${servertype}`;
         console.log("=== PAHE SERVER DEBUG ===");
         console.log("Pahe URL:", paheUrl);
         console.log("AnilistId:", anilistId);
@@ -261,5 +261,4 @@ export default function IframePlayer({
     </div>
   );
 }
-
 
