@@ -130,15 +130,12 @@ export default function IframePlayer({
         console.log("==========================");
         setIframeSrc(vidapiUrl);
       } else if (activeServer?.isPahe) {
-        // Handle Pahe server using vidnest.fun
-        // Get anilistId for the anime
-        const anilistId = animeInfo?.anilistId || aniid;
-        
-        // Construct URL following the pattern: https://vidnest.fun/animepahe/16498/1/sub or https://vidnest.fun/animepahe/16498/1/dub
-        const paheUrl = `${baseURL}/animepahe/${anilistId}/${episodeNum}/${servertype}`;
+        // Handle Pahe server like multi server
+        // Use aniid directly like multi server does
+        const paheUrl = `${baseURL}/animepahe/${aniid}/${episodeNum}/${servertype}`;
         console.log("=== PAHE SERVER DEBUG ===");
         console.log("Pahe URL:", paheUrl);
-        console.log("AnilistId:", anilistId);
+        console.log("Aniid:", aniid);
         console.log("Episode Num:", episodeNum);
         console.log("ServerType:", servertype);
         console.log("BaseURL:", baseURL);
@@ -261,4 +258,3 @@ export default function IframePlayer({
     </div>
   );
 }
-
