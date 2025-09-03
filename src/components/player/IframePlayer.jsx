@@ -130,10 +130,10 @@ export default function IframePlayer({
         console.log("==========================");
         setIframeSrc(vidapiUrl);
       } else if (activeServer?.isPahe) {
-        // Handle Pahe server like multi server
-        // Use aniid directly like multi server does and activeServer.type for correct sub/dub
+        // Handle Pahe server with correct endpoint format
+        // Use aniid directly and activeServer.type for correct sub/dub
         const paheServerType = activeServer.type; // Use the actual server type (sub/dub)
-        const paheUrl = `${baseURL}/animepahe/${aniid}/${episodeNum}/${paheServerType}`;
+        const paheUrl = `${baseURL}/anime/${aniid}/${episodeNum}/${paheServerType}`;
         console.log("=== PAHE SERVER DEBUG ===");
         console.log("Pahe URL:", paheUrl);
         console.log("Aniid:", aniid);
