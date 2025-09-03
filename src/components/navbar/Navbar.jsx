@@ -74,13 +74,13 @@ function Navbar() {
               
               {/* Navigation Menu - Desktop */}
               <div className="hidden lg:flex items-center gap-6 ml-6">
-                <Link to="/recently-added" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
+                <Link to="/recently-updated" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
                   New
                 </Link>
                 <Link to="/most-popular" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
                   Popular
                 </Link>
-                <Link to="/recently-updated" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
+                <Link to="/recently-added" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
                   Simulcast
                 </Link>
                 <div className="relative group">
@@ -149,7 +149,14 @@ function Navbar() {
 
             {/* Bookmark & Profile Icons */}
             <div className="hidden lg:flex items-center gap-2">
-              <button className="p-2 text-crunchyroll-text-muted hover:text-crunchyroll-orange transition-colors">
+              <button 
+                onClick={() => {
+                  // Bookmark functionality
+                  alert('Bookmark feature coming soon!');
+                }}
+                className="p-2 text-crunchyroll-text-muted hover:text-crunchyroll-orange transition-colors"
+                title="Bookmarks"
+              >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                 </svg>
@@ -164,7 +171,14 @@ function Navbar() {
                 <FontAwesomeIcon icon={faRandom} className="text-lg" />
               </Link>
 
-              <button className="p-2 text-crunchyroll-text-muted hover:text-crunchyroll-orange transition-colors">
+              <button 
+                onClick={() => {
+                  // User profile functionality
+                  alert('User profile coming soon!');
+                }}
+                className="p-2 text-crunchyroll-text-muted hover:text-crunchyroll-orange transition-colors"
+                title="User Profile"
+              >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                 </svg>
