@@ -142,7 +142,7 @@ export const useWatch = (animeId, initialEpisodeId) => {
           });
         });
         
-        // Add VidAPI-1 and Pahe servers to SUB category only
+        // Add VidAPI-1 to SUB category only
         if (filteredServers.some((s) => s.type === "sub")) {
           filteredServers.push({
             type: "sub",
@@ -151,10 +151,23 @@ export const useWatch = (animeId, initialEpisodeId) => {
             serverName: "VidAPI-1",
             isVidapi: true,
           });
+        }
+        
+        // Add Pahe servers to both SUB and DUB categories
+        if (filteredServers.some((s) => s.type === "sub")) {
           filteredServers.push({
             type: "sub",
             data_id: "pahe-sub",
             server_id: "pahe-sub",
+            serverName: "Pahe",
+            isPahe: true,
+          });
+        }
+        if (filteredServers.some((s) => s.type === "dub")) {
+          filteredServers.push({
+            type: "dub",
+            data_id: "pahe-dub",
+            server_id: "pahe-dub",
             serverName: "Pahe",
             isPahe: true,
           });
