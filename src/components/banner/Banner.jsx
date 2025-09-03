@@ -65,13 +65,37 @@ function Banner({ item, index }) {
             </svg>
           </Link>
           
-          <button className="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white p-3 rounded-md transition-all duration-200 flex items-center justify-center">
+          <button 
+            onClick={() => {
+              // Show options menu
+              alert('Options menu coming soon!');
+            }}
+            className="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white p-3 rounded-md transition-all duration-200 flex items-center justify-center"
+            title="More Options"
+          >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
             </svg>
           </button>
           
-          <button className="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white p-3 rounded-md transition-all duration-200 flex items-center justify-center">
+          <button 
+            onClick={() => {
+              // Share functionality
+              if (navigator.share) {
+                navigator.share({
+                  title: item.title,
+                  text: `Check out ${item.title} on JustAnime!`,
+                  url: window.location.origin + `/${item.id}`
+                });
+              } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.origin + `/${item.id}`);
+                alert('Link copied to clipboard!');
+              }
+            }}
+            className="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white p-3 rounded-md transition-all duration-200 flex items-center justify-center"
+            title="Share Anime"
+          >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
             </svg>
