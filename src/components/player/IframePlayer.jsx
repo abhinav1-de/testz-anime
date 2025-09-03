@@ -38,6 +38,8 @@ export default function IframePlayer({
       ? "https://slay-knight.xyz"
       : activeServer?.isVidapi
       ? "https://vidapi.xyz"
+      : activeServer?.isPahe
+      ? "https://vidnest.fun"
       : undefined; 
 
   const [loading, setLoading] = useState(true);
@@ -127,6 +129,21 @@ export default function IframePlayer({
         console.log("BaseURL:", baseURL);
         console.log("==========================");
         setIframeSrc(vidapiUrl);
+      } else if (activeServer?.isPahe) {
+        // Handle Pahe server using vidnest.fun
+        // Get anilistId for the anime
+        const anilistId = animeInfo?.anilistId || aniid;
+        
+        // Construct URL following the pattern: https://vidnest.fun/?anilist_id=16498&episode=1&type=sub
+        const paheUrl = `${baseURL}/?anilist_id=${anilistId}&episode=${episodeNum}&type=${servertype}`;
+        console.log("=== PAHE SERVER DEBUG ===");
+        console.log("Pahe URL:", paheUrl);
+        console.log("AnilistId:", anilistId);
+        console.log("Episode Num:", episodeNum);
+        console.log("ServerType:", servertype);
+        console.log("BaseURL:", baseURL);
+        console.log("========================");
+        setIframeSrc(paheUrl);
       } else if (activeServer?.type === "multi" || serverName.toLowerCase() === "multi") {
         // Handle multi server (old Nest functionality)
         const multiUrl = `${baseURL}/${aniid}/${episodeNum}/hindi`;
@@ -244,4 +261,5 @@ export default function IframePlayer({
     </div>
   );
 }
+
 
