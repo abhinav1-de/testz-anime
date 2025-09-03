@@ -1,102 +1,232 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import getCategoryInfo from "@/src/utils/getCategoryInfo.utils";
-import CategoryCard from "@/src/components/categorycard/CategoryCard";
-import CategoryCardLoader from "@/src/components/Loader/CategoryCard.loader";
-import { useNavigate } from "react-router-dom";
-import PageSlider from "@/src/components/pageslider/PageSlider";
+import React, { useCallback, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClosedCaptioning,
+  faMicrophone,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
+import { FaChevronRight } from "react-icons/fa";
+import "./CategoryCard.css";
+import { useLanguage } from "@/src/context/LanguageContext";
+import { Link, useNavigate } from "react-router-dom";
+import AnimeCardWithHover from "../anime-card/AnimeCardWithHover";
 
-function Category({ path, label }) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [categoryInfo, setCategoryInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [totalPages, setTotalPages] = useState(0);
-  const page = parseInt(searchParams.get("page")) || 1;
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    const fetchCategoryInfo = async () => {
-      setLoading(true);
-      try {
-        const data = await getCategoryInfo(path, page);
-        setCategoryInfo(data.data);
-        setTotalPages(data.totalPages);
-        setLoading(false);
-      } catch (err) {
-        setError(err);
-        console.error("Error fetching category info:", err);
-        setLoading(false);
+const CategoryCard = React.memo(
+  ({
+    label,
+    data,
+    showViewMore = true,
+    className,
+    categoryPage = false,
+    cardStyle,
+    path,
+    limit,
+  }) => {
+    const { language } = useLanguage();
+    const navigate = useNavigate();
+    
+    if (limit) {
+      data = data.slice(0, limit);
+    }
+
+    const [itemsToRender, setItemsToRender] = useState({
+      firstRow: [],
+      remainingItems: [],
+    });
+
+    const getItemsToRender = useCallback(() => {
+      if (categoryPage) {
+        const firstRow =
+          window.innerWidth > 758 && data.length > 4 ? data.slice(0, 4) : [];
+        const remainingItems =
+          window.innerWidth > 758 && data.length > 4
+            ? data.slice(4)
+            : data.slice(0);
+        return { firstRow, remainingItems };
       }
-    };
-    fetchCategoryInfo();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [path, page]);
+      return { firstRow: [], remainingItems: data.slice(0) };
+    }, [categoryPage, data]);
 
-  const handlePageChange = (newPage) => {
-    setSearchParams({ page: newPage });
-  };
+    useEffect(() => {
+      const handleResize = () => {
+        setItemsToRender(getItemsToRender());
+      };
+      const newItems = getItemsToRender();
+      setItemsToRender((prev) => {
+        if (
+          JSON.stringify(prev.firstRow) !== JSON.stringify(newItems.firstRow) ||
+          JSON.stringify(prev.remainingItems) !==
+            JSON.stringify(newItems.remainingItems)
+        ) {
+          return newItems;
+        }
+        return prev;
+      });
 
-  const categoryGridClass = "grid-cols-8 max-[1600px]:grid-cols-6 max-[1200px]:grid-cols-4 max-[758px]:grid-cols-3 max-[478px]:grid-cols-3 max-[478px]:gap-x-2";
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, [getItemsToRender]);
 
-  return (
-    <div className="max-w-[1600px] mx-auto flex flex-col mt-[64px] max-md:mt-[50px]">
-      <div className="w-full flex flex-col gap-y-8 mt-6">
-        {loading ? (
-          <CategoryCardLoader className={"max-[478px]:mt-2"} gridClass={categoryGridClass} />
-        ) : page > totalPages ? (
-          <div className="flex flex-col gap-y-4">
-            <h1 className="font-bold text-2xl text-white max-[478px]:text-[18px]">
-              {label.split("/").pop()}
-            </h1>
-            <p className="text-white text-lg max-[478px]:text-[16px] max-[300px]:leading-6">
-              You came a long way, go back <br className="max-[300px]:hidden" />
-              nothing is here
-            </p>
-          </div>
-        ) : categoryInfo && categoryInfo.length > 0 ? (
-          <div className="flex flex-col gap-y-2 max-[478px]:gap-y-0">
-            <h1 className="font-bold text-2xl text-white max-[478px]:text-[18px]">
-              {label.split("/").pop()}
-            </h1>
-            <CategoryCard
-              data={categoryInfo}
-              showViewMore={false}
-              className="mt-0"
-              gridClass={categoryGridClass}
-              categoryPage={true}
-              path={path}
-            />
-            <div className="flex justify-center w-full mt-8">
-              <PageSlider
-                page={page}
-                totalPages={totalPages}
-                handlePageChange={handlePageChange}
-              />
+    return (
+      <div className={`w-full ${className}`}>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="font-semibold text-2xl text-white max-[478px]:text-[18px] capitalize tracking-wide">
+            {label}
+          </h1>
+          {showViewMore && (
+            <Link
+              to={`/${path}`}
+              className="flex items-center gap-x-1 py-1 px-2 -mr-2 rounded-md
+                text-[13px] font-medium text-[#ffffff80] hover:text-white
+                transition-all duration-300 group"
+            >
+              View all
+              <FaChevronRight className="text-[10px] transform transition-transform duration-300 
+                group-hover:translate-x-0.5" />
+            </Link>
+          )}
+        </div>
+        <>
+          {categoryPage && (
+            <div
+              className={`grid grid-cols-4 gap-x-3 gap-y-8 transition-all duration-300 ease-in-out ${
+                categoryPage && itemsToRender.firstRow.length > 0
+                  ? "mt-8 max-[758px]:hidden"
+                  : ""
+              }`}
+            >
+              {itemsToRender.firstRow.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col category-card-container"
+                  style={{ height: "fit-content" }}
+                >
+                  <div className="w-full h-auto pb-[140%] relative inline-block overflow-hidden rounded-lg shadow-lg group">
+                    <div
+                      className="inline-block bg-gray-900 absolute left-0 top-0 w-full h-full group hover:cursor-pointer"
+                      onClick={() =>
+                        navigate(
+                          `${
+                            path === "top-upcoming"
+                              ? `/${item.id}`
+                              : `/watch/${item.id}`
+                          }`
+                        )
+                      }
+                    >
+                      <img
+                        src={`${item.poster}`}
+                        alt={item.title}
+                        className="block w-full h-full object-cover transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:blur-sm"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                        <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <FontAwesomeIcon
+                            icon={faPlay}
+                            className="text-[50px] text-white drop-shadow-lg max-[450px]:text-[36px]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {(item.tvInfo?.rating === "18+" ||
+                      item?.adultContent === true) && (
+                      <div className="text-white px-2 py-0.5 rounded-lg bg-red-600 absolute top-3 left-3 flex items-center justify-center text-[12px] font-bold">
+                        18+
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 pb-2 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
+                      <div className="flex items-center justify-start w-full space-x-1.5 z-[100] flex-wrap gap-y-1.5">
+                        {item.tvInfo?.sub && (
+                          <div className="flex space-x-0.5 justify-center items-center bg-[#2a2a2a] rounded-[2px] px-2 text-white py-1">
+                            <FontAwesomeIcon
+                              icon={faClosedCaptioning}
+                              className="text-[11px]"
+                            />
+                            <p className="text-[11px] font-medium">
+                              {item.tvInfo.sub}
+                            </p>
+                          </div>
+                        )}
+                        {item.tvInfo?.dub && (
+                          <div className="flex space-x-0.5 justify-center items-center bg-[#2a2a2a] rounded-[2px] px-2 text-white py-1">
+                            <FontAwesomeIcon
+                              icon={faMicrophone}
+                              className="text-[11px]"
+                            />
+                            <p className="text-[11px] font-medium">
+                              {item.tvInfo.dub}
+                            </p>
+                          </div>
+                        )}
+                        {item.tvInfo?.showType && (
+                          <div className="bg-[#2a2a2a] text-white rounded-[2px] px-2 py-1 text-[11px] font-medium">
+                            {item.tvInfo.showType.split(" ").shift()}
+                          </div>
+                        )}
+                        {item.releaseDate && (
+                          <div className="bg-[#2a2a2a] text-white rounded-[2px] px-2 py-1 text-[11px] font-medium">
+                            {item.releaseDate}
+                          </div>
+                        )}
+                        {!item.tvInfo?.showType && item.type && (
+                          <div className="bg-[#2a2a2a] text-white rounded-[2px] px-2 py-1 text-[11px] font-medium">
+                            {item.type}
+                          </div>
+                        )}
+                        {(item.tvInfo?.duration || item.duration) && (
+                          <div className="bg-[#2a2a2a] text-white rounded-[2px] px-2 py-1 text-[11px] font-medium">
+                            {item.tvInfo?.duration === "m" ||
+                            item.tvInfo?.duration === "?" ||
+                            item.duration === "m" ||
+                            item.duration === "?"
+                              ? "N/A"
+                              : item.tvInfo?.duration || item.duration || "N/A"}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <Link
+                    to={`/${item.id}`}
+                    className="text-white font-semibold mt-3 item-title hover:text-white hover:cursor-pointer line-clamp-1"
+                  >
+                    {language === "EN" ? item.title : item.japanese_title}
+                  </Link>
+                  {item.description && (
+                    <div className="line-clamp-3 text-[13px] font-light text-gray-400 mt-3 max-[1200px]:hidden">
+                      {item.description}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
+          )}
+          <div className={`grid ${cardStyle || 'grid-cols-6 max-[1400px]:grid-cols-4 max-[758px]:grid-cols-3 max-[478px]:grid-cols-3'} gap-x-3 gap-y-8 mt-6 transition-all duration-300 ease-in-out max-[478px]:gap-x-2`}>
+            {itemsToRender.remainingItems.map((item, index) => (
+              <AnimeCardWithHover
+                key={index}
+                item={item}
+                path={path}
+                index={index}
+                onBookmark={(item, isBookmarked) => {
+                  // Handle bookmark action
+                  console.log(`${item.title} ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`);
+                }}
+                onShare={(item) => {
+                  // Handle share action
+                  console.log(`Shared ${item.title}`);
+                }}
+              />
+            ))}
           </div>
-        ) : error ? (
-          <div className="flex flex-col gap-y-4">
-            <h1 className="font-bold text-2xl text-white max-[478px]:text-[18px]">
-              {label.split("/").pop()}
-            </h1>
-            <p className="text-white text-lg max-[478px]:text-[16px]">
-              Couldn't get {label.split("/").pop()} results, please try again
-            </p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-y-4">
-            <h1 className="font-bold text-2xl text-white max-[478px]:text-[18px]">
-              {label.split("/").pop()}
-            </h1>
-            <p className="text-white text-lg max-[478px]:text-[16px]">
-              No results found for: {label.split("/").pop()}
-            </p>
-          </div>
-        )}
+        </>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
 
-export default Category;
+CategoryCard.displayName = "CategoryCard";
+
+export default CategoryCard;
