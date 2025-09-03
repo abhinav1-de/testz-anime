@@ -142,7 +142,7 @@ export const useWatch = (animeId, initialEpisodeId) => {
           });
         });
         
-        // Add VidAPI-1 and VidAPI-2 servers to SUB category only
+        // Add VidAPI-1 and Pahe servers to SUB category only
         if (filteredServers.some((s) => s.type === "sub")) {
           filteredServers.push({
             type: "sub",
@@ -153,10 +153,10 @@ export const useWatch = (animeId, initialEpisodeId) => {
           });
           filteredServers.push({
             type: "sub",
-            data_id: "vidapi2-sub",
-            server_id: "vidapi2-sub",
-            serverName: "VidAPI-2",
-            isVidapi: true,
+            data_id: "pahe-sub",
+            server_id: "pahe-sub",
+            serverName: "Pahe",
+            isPahe: true,
           });
         }
         
@@ -245,7 +245,7 @@ export const useWatch = (animeId, initialEpisodeId) => {
     )
       return;
     if (
-      (activeServerName?.toLowerCase() === "hd-1" || activeServerName?.toLowerCase() === "hd-4" || activeServerName?.toLowerCase() === "nest" || activeServerType?.toLowerCase() === "slay" || activeServerName?.includes("VidAPI")) 
+      (activeServerName?.toLowerCase() === "hd-1" || activeServerName?.toLowerCase() === "hd-4" || activeServerName?.toLowerCase() === "nest" || activeServerType?.toLowerCase() === "slay" || activeServerName?.includes("VidAPI") || activeServerName?.toLowerCase() === "pahe") 
       &&
       !serverLoading
     ) {
