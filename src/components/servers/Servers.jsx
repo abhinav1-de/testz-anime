@@ -35,8 +35,8 @@ function Servers({
 
   // Filter servers based on multiplayer compatibility
   const isIframeCompatible = (server) => {
-    // Multiplayer compatible servers: SLAY and VIDAPI servers
-    return server.type === "slay" || server.isVidapi;
+    // Multiplayer compatible servers: SLAY, VIDAPI, and PAHE servers
+    return server.type === "slay" || server.isVidapi || server.isPahe;
   };
 
   // When in multiplayer room, only show iframe-compatible servers
