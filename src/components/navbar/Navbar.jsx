@@ -74,10 +74,10 @@ function Navbar() {
               
               {/* Navigation Menu - Desktop */}
               <div className="hidden lg:flex items-center gap-6 ml-6">
-                <Link to="/home" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
+                <Link to="/recently-added" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
                   New
                 </Link>
-                <Link to="/popular" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
+                <Link to="/most-popular" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
                   Popular
                 </Link>
                 <Link to="/recently-updated" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
@@ -86,10 +86,44 @@ function Navbar() {
                 <div className="relative group">
                   <button className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium flex items-center gap-1">
                     Categories
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   </button>
+                  
+                  {/* Categories Dropdown */}
+                  <div className="absolute top-full left-0 mt-2 w-80 bg-crunchyroll-darker border border-crunchyroll-gray rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="p-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <h3 className="text-crunchyroll-text font-semibold text-sm mb-2 uppercase tracking-wide">Genres</h3>
+                          <div className="space-y-1">
+                            <Link to="/genre/action" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Action</Link>
+                            <Link to="/genre/adventure" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Adventure</Link>
+                            <Link to="/genre/comedy" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Comedy</Link>
+                            <Link to="/genre/drama" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Drama</Link>
+                            <Link to="/genre/fantasy" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Fantasy</Link>
+                            <Link to="/genre/romance" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Romance</Link>
+                            <Link to="/genre/sci-fi" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Sci-Fi</Link>
+                            <Link to="/genre/shounen" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Shounen</Link>
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="text-crunchyroll-text font-semibold text-sm mb-2 uppercase tracking-wide">Categories</h3>
+                          <div className="space-y-1">
+                            <Link to="/top-airing" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Top Airing</Link>
+                            <Link to="/most-favorite" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Most Favorite</Link>
+                            <Link to="/completed" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Completed</Link>
+                            <Link to="/movie" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Movies</Link>
+                            <Link to="/ova" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">OVA</Link>
+                            <Link to="/special" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Special</Link>
+                            <Link to="/subbed-anime" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Subbed</Link>
+                            <Link to="/dubbed-anime" className="block text-crunchyroll-text-muted hover:text-crunchyroll-orange text-sm py-1 transition-colors">Dubbed</Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <Link to="/schedule" className="text-crunchyroll-text-muted hover:text-crunchyroll-text transition-colors font-medium">
                   Schedule
