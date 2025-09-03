@@ -21,6 +21,7 @@ import SplashScreen from "./components/splashscreen/SplashScreen";
 import Terms from "./pages/terms/Terms";
 import DMCA from "./pages/dmca/DMCA";
 import Contact from "./pages/contact/Contact";
+import SchedulePage from "./pages/schedule/SchedulePage";
 
 function App() {
   const location = useLocation();
@@ -51,6 +52,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/producer/:id" element={<Producer />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/schedule" element={<SchedulePage />} />
             {/* Render category routes */}
             {categoryRoutes.map((path) => (
               <Route
@@ -85,3 +87,5 @@ function App() {
 }
 
 export default App;
+
+
